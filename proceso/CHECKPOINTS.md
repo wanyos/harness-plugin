@@ -1,0 +1,115 @@
+# CHECKPOINTS — Evaluación del estado final
+
+> En sistemas multi-agente no se evalúa el camino, se evalúa el destino.
+> Estos son los checkpoints objetivos que un juez (humano o IA) puede usar
+> para decidir si el proyecto está sano.
+
+## C1 — El arnés está completo
+
+- [ ] Existen los archivos base: `AGENTS.md`, `init.sh`, `feature_list.json`,
+      `progress/current.md`.
+- [ ] Existen los docs: `docs/stack.md`, `docs/architecture.md`,
+      `docs/conventions.md`, `docs/verification.md`, `docs/specs.md`.
+- [ ] `./init.sh` termina con exit code 0.
+
+## C2 — El estado es coherente
+
+- [ ] Como mucho una feature en `in_progress` en `feature_list.json`.
+- [ ] Toda feature `done` tiene tests asociados que pasan.
+- [ ] `progress/current.md` está vacío o describe la sesión activa
+      (no contiene basura de sesiones anteriores).
+
+## C3 — El código respeta la arquitectura
+
+- [ ] La estructura de carpetas coincide con lo descrito en `docs/architecture.md`.
+- [ ] No se han introducido dependencias nuevas sin justificación documentada
+      en `progress/current.md` o en `docs/architecture.md`.
+- [ ] No hay logs de debug sueltos (`console.log`, `print()`, `dd()`, etc.)
+      ni TODOs sin contexto.
+- [ ] Las convenciones de `docs/conventions.md` se respetan.
+
+## C4 — La verificación es real
+
+- [ ] Existe al menos un test ejecutable por cada módulo / feature nuevos.
+- [ ] Los tests se ejecutan en el entorno descrito en `docs/verification.md`
+      y todos pasan.
+- [ ] Los tests cubren al menos un camino feliz y un camino de error donde
+      aplique.
+- [ ] Si la feature tiene `checks` en `feature_list.json`,
+      `./init.sh --checks` termina en verde y cada check muestra que ejecutó
+      algo (ver `docs/specs.md §checks`).
+
+## C4 bis — Una pasada con datos reales, si la feature lee datos de fuera
+
+> No sustituye a los tests: los complementa. Los tests usan datos inventados, a
+> menudo por el mismo agente que escribe el código; esta pasada comprueba lo que
+> llega de verdad.
+
+- [ ] Si la feature añade o cambia la lectura de algo que no escribe el propio
+      código (un archivo que sube o descarga el humano, la respuesta de una API
+      externa, una importación), antes de cerrarla se ha pasado **un dato real**
+      por el código nuevo.
+- [ ] El resultado está en el informe del implementer, sección `## Prueba real`,
+      con **recuentos y forma, nunca contenido**.
+- [ ] Si no se pudo hacer, el informe dice por qué y el leader lo ha apuntado
+      como deber del humano en `docs/roadmap.md`. Saltarla sin decirlo es
+      `CHANGES_REQUESTED`.
+
+## C5 — La sesión se cerró bien
+
+- [ ] No hay archivos sin trackear sospechosos (temporales, builds, caches
+      fuera del `.gitignore` del proyecto o del `.git/info/exclude`).
+- [ ] `progress/history.md` tiene **una línea** por la última feature cerrada,
+      con enlace a su `summaries/<name>.md`. No una copia del informe.
+- [ ] La última feature trabajada está reflejada en su estado correcto en
+      `feature_list.json`.
+- [ ] Al cerrar la feature, `progress/current.md` queda vacío: cada cosa que
+      seguía viva se ha **movido** a su sitio según la tabla de su cabecera, no
+      copiado.
+
+## C6 — Coherencia con proyectos hermanos (si aplica)
+
+- [ ] Si el cambio afecta el contrato con otro proyecto (frontend↔backend),
+      `docs/related-projects.md` se ha actualizado o se ha anotado
+      pendiente en `progress/current.md`.
+- [ ] No hay endpoints, modelos o tipos inventados sin referencia clara
+      al contrato del otro proyecto.
+
+## C7 — Spec Driven Development (solo si la feature tiene `"sdd": true`)
+
+- [ ] Toda feature con `"sdd": true` en estado `spec_ready`, `in_progress`
+      o `done` tiene su carpeta `specs/<nn>-<name>/` con los archivos técnicos:
+      `requirements.md`, `design.md`, `tasks.md`.
+- [ ] Si la feature está en `spec_ready` o `in_progress`, la carpeta tiene
+      además `decisions.md` — son **4 archivos**, no 3. (No se exige en
+      features ya `done`: la hoja es un artefacto de revisión y las cerradas
+      antes de que existiera la regla no se tocan.)
+- [ ] `decisions.md` cabe en una página, tiene los bloques del formato de
+      `docs/decisions-template.md` y **no más de 6 puntos en el bloque 🔴**,
+      cada uno con su alternativa concreta.
+- [ ] El spec no pasa de **~15 requirements**. Si se pasa, la razón está
+      **dicha explícitamente** en `decisions.md`, no en silencio.
+- [ ] `requirements.md` usa EARS estricto (ver `docs/specs.md`).
+- [ ] Toda feature `done` con `"sdd": true` tiene todas sus tasks marcadas
+      `[x]` en `tasks.md`.
+- [ ] Cada `R<n>` de `requirements.md` está cubierto por al menos un test
+      concreto.
+
+## C8 — El resumen de cierre existe (solo al aprobar una feature)
+
+- [ ] Toda feature que se cierra como `done` tiene su
+      `progress/summaries/<name>.md` escrito en lenguaje humano
+      (ver `docs/summary-template.md`).
+- [ ] El resumen mapea **todo** el código de la feature, agrupado por tema:
+      enlace al archivo sin línea + símbolo, y enlace con línea solo en los
+      puntos de entrada (3-6).
+- [ ] El resumen cierra el círculo con el `intent`: cada punto de
+      `como_se_que_esta_bien` aparece marcado como cumplido y con su test.
+
+---
+
+**Cómo usar este archivo:** un agente revisor (`.claude/agents/reviewer.md`)
+recorre cada checkbox, marca `[x]` o `[ ]`, y rechaza el cierre de sesión
+si quedan boxes vacíos en C1-C5 (C6 solo aplica si hay proyecto hermano;
+C7 solo aplica si la feature es SDD; C8 solo aplica al aprobar una feature
+para marcarla `done`).

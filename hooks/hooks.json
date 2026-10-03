@@ -1,0 +1,33 @@
+{
+  "description": "Hooks del harness: reglas comunes al arrancar la sesión y cada subagente",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/inyectar-reglas.sh\" SessionStart reglas-comunes-1.md"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/inyectar-reglas.sh\" SessionStart reglas-comunes-2.md"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/inyectar-reglas.sh\" SubagentStart reglas-comunes-1.md"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/inyectar-reglas.sh\" SubagentStart reglas-comunes-2.md"
+          }
+        ]
+      }
+    ]
+  }
+}
