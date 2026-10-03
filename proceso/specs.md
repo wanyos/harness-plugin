@@ -11,7 +11,7 @@
 > **Quién lee este documento:** el `spec-author`. Es su manual de autoría.
 >
 > El `implementer` y el `reviewer` **ya no lo leen**: lo que cada uno necesita de
-> un spec está escrito en su propia definición (`.claude/agents/`). Antes lo
+> un spec está escrito en su propia definición (`agents/`). Antes lo
 > leían los tres, 277 líneas por cabeza y por feature, para usar cuatro reglas
 > cada uno. Si cambias algo de aquí que les afecte, cámbialo también allí.
 
@@ -43,7 +43,7 @@ es el `id` de la feature con **dos dígitos** (`08-data-model`,
 `31-real-account-balance`): así la carpeta se localiza por el número y la lista
 sale ordenada. `./init.sh` exige ese nombre exacto en su paso 3.
 
-`decisions.md` sigue la plantilla de `docs/decisions-template.md`. Los otros
+`decisions.md` sigue la plantilla de `proceso/decisions-template.md`. Los otros
 tres son material del `implementer` y del `reviewer`.
 
 ## Las cuatro reglas de revisabilidad
@@ -64,8 +64,8 @@ procedencia, trazabilidad y firmas son maquinaria legítima para el `implementer
 y el `reviewer`; el humano necesita **las decisiones**, y sin esta hoja quedan
 repartidas por cientos de líneas.
 
-> Formato y reglas de estilo en **`docs/decisions-template.md`** (hermana de
-> `docs/intent-template.md`, la de entrada, y de `docs/summary-template.md`, la
+> Formato y reglas de estilo en **`proceso/decisions-template.md`** (hermana de
+> `proceso/intent-template.md`, la de entrada, y de `proceso/summary-template.md`, la
 > de salida: esta es la de **revisión**). Las tres cubren el ciclo de una
 > feature: el humano escribe la primera y lee las otras dos.
 
@@ -104,7 +104,7 @@ inmediato. Las reglas 1-3 atacan el **coste de revisión**; la 4 ataca el
 ## El QUÉ lo escribe el humano (antes del spec)
 
 Toda feature parte de un bloque `intent` que escribe el humano en
-`feature_list.json` (ver `docs/intent-template.md`). Ese `intent` es la
+`feature_list.json` (ver `proceso/intent-template.md`). Ese `intent` es la
 **fuente de verdad del QUÉ y del POR QUÉ**. El `acceptance` técnico y los
 `requirements` del spec son *derivaciones* de la intención, nunca la
 sustituyen. El agente no inventa el QUÉ.
@@ -147,7 +147,7 @@ pending → [spec-author] → spec_ready → ⏸ HUMANO → in_progress → [imp
 
 ## decisions.md — la hoja del humano
 
-Plantilla completa y reglas de estilo en **`docs/decisions-template.md`**. El
+Plantilla completa y reglas de estilo en **`proceso/decisions-template.md`**. El
 formato es fijo:
 
 | Bloque | Contenido | Límite |

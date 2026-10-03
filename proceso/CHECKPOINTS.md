@@ -6,10 +6,10 @@
 
 ## C1 — El arnés está completo
 
-- [ ] Existen los archivos base: `AGENTS.md`, `init.sh`, `feature_list.json`,
+- [ ] Existen los archivos base: `init.sh`, `feature_list.json`,
       `progress/current.md`.
 - [ ] Existen los docs: `docs/stack.md`, `docs/architecture.md`,
-      `docs/conventions.md`, `docs/verification.md`, `docs/specs.md`.
+      `docs/conventions.md`, `docs/verification.md`.
 - [ ] `./init.sh` termina con exit code 0.
 
 ## C2 — El estado es coherente
@@ -37,7 +37,7 @@
       aplique.
 - [ ] Si la feature tiene `checks` en `feature_list.json`,
       `./init.sh --checks` termina en verde y cada check muestra que ejecutó
-      algo (ver `docs/specs.md §checks`).
+      algo (ver `proceso/specs.md §checks`).
 
 ## C4 bis — Una pasada con datos reales, si la feature lee datos de fuera
 
@@ -85,11 +85,11 @@
       features ya `done`: la hoja es un artefacto de revisión y las cerradas
       antes de que existiera la regla no se tocan.)
 - [ ] `decisions.md` cabe en una página, tiene los bloques del formato de
-      `docs/decisions-template.md` y **no más de 6 puntos en el bloque 🔴**,
+      `proceso/decisions-template.md` y **no más de 6 puntos en el bloque 🔴**,
       cada uno con su alternativa concreta.
 - [ ] El spec no pasa de **~15 requirements**. Si se pasa, la razón está
       **dicha explícitamente** en `decisions.md`, no en silencio.
-- [ ] `requirements.md` usa EARS estricto (ver `docs/specs.md`).
+- [ ] `requirements.md` usa EARS estricto (ver `proceso/specs.md`).
 - [ ] Toda feature `done` con `"sdd": true` tiene todas sus tasks marcadas
       `[x]` en `tasks.md`.
 - [ ] Cada `R<n>` de `requirements.md` está cubierto por al menos un test
@@ -99,7 +99,7 @@
 
 - [ ] Toda feature que se cierra como `done` tiene su
       `progress/summaries/<name>.md` escrito en lenguaje humano
-      (ver `docs/summary-template.md`).
+      (ver `proceso/summary-template.md`).
 - [ ] El resumen mapea **todo** el código de la feature, agrupado por tema:
       enlace al archivo sin línea + símbolo, y enlace con línea solo en los
       puntos de entrada (3-6).
@@ -108,7 +108,7 @@
 
 ---
 
-**Cómo usar este archivo:** un agente revisor (`.claude/agents/reviewer.md`)
+**Cómo usar este archivo:** un agente revisor (`agents/reviewer.md`)
 recorre cada checkbox, marca `[x]` o `[ ]`, y rechaza el cierre de sesión
 si quedan boxes vacíos en C1-C5 (C6 solo aplica si hay proyecto hermano;
 C7 solo aplica si la feature es SDD; C8 solo aplica al aprobar una feature

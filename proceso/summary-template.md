@@ -2,7 +2,7 @@
 
 > **Esto lo escribe el REVIEWER, en lenguaje humano, al aprobar una feature.**
 >
-> Es la pieza de SALIDA, simétrica a `docs/intent-template.md` (la de entrada).
+> Es la pieza de SALIDA, simétrica a `proceso/intent-template.md` (la de entrada).
 > Un archivo por feature en `progress/summaries/<feature>.md`.
 >
 > **Para qué sirve de verdad:** es lo que impide perder el hilo del proyecto.

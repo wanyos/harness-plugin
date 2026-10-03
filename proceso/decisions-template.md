@@ -12,7 +12,7 @@
 >
 > Reglas de estilo:
 > - **Una página.** Si no cabe, el problema no es la hoja: es que la feature hace
->   demasiadas cosas (ver `docs/specs.md` §Las cuatro reglas de revisabilidad).
+>   demasiadas cosas (ver `proceso/specs.md` §Las cuatro reglas de revisabilidad).
 > - **Una línea por decisión.** Si una necesita un párrafo, es que hay que
 >   partirla en dos o que su sitio son los archivos técnicos.
 > - **Máximo 6 puntos en el bloque 🔴.** Más significa que estás mezclando

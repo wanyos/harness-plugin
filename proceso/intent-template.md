@@ -38,7 +38,7 @@
   uno a uno: aquí es donde saltan los huecos que en caliente no se te ocurren
   (el caso raro, el error, el vacío).
   Cada frase de aquí se convierte, cuando se puede, en un comando que se
-  ejecuta al cerrar la feature (los `checks`, ver `docs/specs.md §checks`).
+  ejecuta al cerrar la feature (los `checks`, ver `proceso/specs.md §checks`).
   Tú no escribes comandos: escribe frases concretas y los agentes los derivan.
 - **Qué NO quiero / límites** — lo que queda fuera de scope y lo que no se
   debe tocar. Acota para que el agente no se expanda de más.
