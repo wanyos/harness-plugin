@@ -1,5 +1,5 @@
 {
-  "description": "Hooks del harness: reglas comunes al arrancar la sesión y cada subagente",
+  "description": "Hooks del harness: reglas comunes al arrancar la sesión y cada subagente; verificación rápida tras cada lote de herramientas que toca código; verificación completa cuando termina el implementer",
   "hooks": {
     "SessionStart": [
       {
@@ -25,6 +25,27 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/inyectar-reglas.sh\" SubagentStart reglas-comunes-2.md"
+          }
+        ]
+      }
+    ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/verify-changed.sh\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "^harness:implementer$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/verify-full.sh\""
           }
         ]
       }
