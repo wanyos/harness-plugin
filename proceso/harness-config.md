@@ -1,8 +1,101 @@
 
+
+## 11. Instalar el plugin
+
+### 11.1 — Una vez por ordenador
+
+```bash
+claude plugin marketplace add wanyos/harness-plugin
+#   sin clave SSH en GitHub: claude plugin marketplace add https://github.com/wanyos/harness-plugin.git
+claude plugin install harness@wanyos
+claude plugin disable harness@wanyos --scope user
+```
+
+**Por qué se desactiva a nivel de usuario:** con scope user el plugin se activa
+en **todos** los proyectos donde abras Claude Code, también en los que no usan
+el harness (o usan otra versión), y les inyecta reglas y hooks. Se activa
+proyecto a proyecto con `enabledPlugins` (§11.2), que viaja con el repositorio.
+
+Actualizar a una versión nueva:
+
+```bash
+claude plugin marketplace update wanyos
+claude plugin update harness@wanyos
+```
+
+En Windows: Claude Code se arranca desde **PowerShell** (en Git Bash entra en
+modo `--print`); `./init.sh` y git, desde **Git Bash**.
+
+### 11.2 — En cada proyecto (nuevo o existente)
+
+Desde la raíz del proyecto, en Git Bash, copiar el esqueleto de la última
+versión instalada. `cp -n` no pisa lo que ya exista:
+
+```bash
+S=$(ls -d ~/.claude/plugins/cache/*/harness/*/proyecto | sort -V | tail -1)
+cp -rn "$S"/. .
+chmod +x init.sh
+```
+
+Esto añade `init.sh`, `.claude/settings.json`, `.gitattributes`,
+`feature_list.json`, `progress/` y `docs/`. Si el proyecto **ya tenía**
+`.claude/settings.json` o `.gitattributes`, no se copian: fusiónalos a mano.
+`settings.json` necesita `"agent": "harness:leader"`, la regla
+`Read(~/.claude/plugins/cache/*/harness/**)` y
+`"enabledPlugins": { "harness@wanyos": true }`.
+
+Añadir al `.gitignore` (así `settings.json` se versiona y lo local no):
+
+```
+.claude/*
+!.claude/settings.json
+```
+
+Instalar dependencias y comprobar:
+
+```bash
+<gestor> install          # pnpm / npm / dotnet restore…
+./init.sh --state         # debe salir en verde
+git add -A && git update-index --chmod=+x init.sh
+git commit -m "Instalar plugin harness"
+```
+
+Lo propio del proyecto que `./init.sh` no detecta solo (un lint concreto, E2E,
+un paso extra) va en `init.local.sh` (ver la cabecera de `init.sh`), nunca en
+el plugin.
+
+### 11.3 — Proyecto existente: setup asistido de los docs
+
+1. Haz commit de lo de §11.2 antes: así todo lo que escriba el agente se ve en
+   un `git diff` y se puede revertir de golpe.
+2. Abre Claude Code en el proyecto. La cabecera debe mostrar `harness:leader`.
+3. Pídele: `haz el setup inicial del harness`. Rellena `docs/stack.md`,
+   `docs/verification.md`, `docs/architecture.md` y `docs/conventions.md` como
+   **borrador**, y deja en `progress/current.md` dos listas: DESCUBIERTO y
+   PROPUESTO. No toca código ni `feature_list.json`.
+4. Revisa lo PROPUESTO con la §12. Hasta que lo confirmes, no son reglas.
+
+**Si el proyecto venía de harness-template** (o de un harness que no estaba en
+git): antes de borrar nada, copia fuera del proyecto todo lo que no esté
+versionado (`git status --short --ignored`, sin `node_modules` ni `dist`).
+Ahí suelen estar el `docs/architecture.md` con los ADR originales, el
+`feature_list.json` y el historial de `progress/`, que el agente no puede
+reconstruir. Después se quitan los archivos del harness viejo: `CLAUDE.md`,
+`AGENTS.md`, `CHECKPOINTS.md`, `VERSION`, `.harness-manifest`,
+`docs/specs.md`, `docs/{intent,decisions,summary}-template.md` y
+`.claude/{agents,commands,hooks}`; `init.sh` se sustituye por el de §11.2.
+
+### 11.4 — Comprobar con un clon limpio
+
+Al terminar, clona el repositorio en otra carpeta (u otro ordenador), instala
+dependencias y lanza `./init.sh`. Destapa lo que solo existía en tu copia
+local: archivos sin versionar y **dependencias fantasma** (con pnpm 11, paquetes
+que se importan pero no están en `package.json`).
+
 ## 12. Configurar el harness para tu proyecto
 
-> En este punto el harness ya está **instalado** (archivos copiados, exclude
-> configurado, `init.sh` verde). Pero todavía es **genérico**: contiene
+> En este punto el harness ya está **instalado** (§11: plugin activo en el
+> proyecto, esqueleto copiado, `./init.sh --state` verde). Pero todavía es **genérico**: contiene
 > plantillas con TODOs. Esta sección te explica cómo rellenarlas para que
 > el harness sepa de qué va tu proyecto.
 >
@@ -320,7 +413,7 @@ esté terminada):
   — significa que está respetando las reglas. Cada respuesta tuya hace
   los docs más sólidos para sesiones futuras.
 - **Si el agente intenta saltarse el flujo** (ej: empieza a editar código
-  siendo `leader`), recuérdale el rol citando `.claude/agents/leader.md`. Es un
+  siendo `leader`), recuérdale el rol citando el agente `harness:leader` (`agents/leader.md` del plugin). Es un
   recordatorio que suele funcionar.
 - **Anota en el cheatsheet** los aprendizajes que vayan surgiendo. Lo que
   hoy es un descubrimiento, mañana es procedimiento.
@@ -338,16 +431,17 @@ vez al mes (o cuando notes fricción), revisa:
   ADR? ¿hay anti-patrones nuevos que añadir a "Qué NO hacer"?
 - **`feature_list.json`**: ¿quedan features `done` muy antiguas que ya
   podrían archivarse? (puedes sacarlas a `feature_list.archive.json`).
-- **Plantilla maestra**: si descubres algo que mejora el harness en este
-  proyecto y aplica a todos, **actualiza la plantilla maestra** y luego propaga
-  con `upgrade-harness.sh` a los proyectos en marcha. El comando `/harness:lessons`
+- **El plugin**: si descubres algo que mejora el harness en este proyecto y
+  aplica a todos, cámbialo en el repositorio `harness-plugin`, sube `version` en
+  `.claude-plugin/plugin.json` y haz push. Cada ordenador lo recibe con
+  `claude plugin update harness@wanyos` (§11.1). El comando `/harness:lessons`
   hace esta búsqueda por ti a partir de `docs/lessons.md` y de los rechazos del
-  reviewer, y te deja las propuestas para la plantilla ya redactadas.
+  reviewer, y te deja las propuestas para el plugin ya redactadas.
 
-**Al aplicar en la plantilla una propuesta de `/harness:lessons`:** cámbiala en el
-archivo del motor que dice la propuesta (no en `CLAUDE.md` salvo que afecte a
-todos los agentes), sube `VERSION`, y tras propagar, en el proyecto de origen la
-lección pasa a `en plantilla v<versión>` (el siguiente `/harness:lessons` lo propone).
+**Al aplicar en el plugin una propuesta de `/harness:lessons`:** cámbiala en el
+archivo del plugin que dice la propuesta (no en `reglas-comunes-*.md` salvo que
+afecte a todos los agentes), sube `version`, y tras actualizar, en el proyecto de
+origen la lección pasa a `en plantilla v<versión>` (el siguiente `/harness:lessons` lo propone).
 
 ### Reglas que NO se relajan
 
