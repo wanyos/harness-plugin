@@ -1,0 +1,4 @@
+# Finales de línea: LF en el repositorio y en el disco, en Windows, macOS y Linux.
+# Va en el repo y no en core.autocrlf de cada ordenador, para que el plugin se
+# instale igual en cualquier máquina (bash falla con scripts en CRLF).
+* text=auto eol=lf
