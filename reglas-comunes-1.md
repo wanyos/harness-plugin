@@ -77,7 +77,7 @@ Los términos aprobados viven en dos sitios:
 | `checks` | Campo de una feature en `feature_list.json`: comandos que tienen que salir con exit 0 para cerrarla. Se ejecutan con `./init.sh --checks` | Las frases de `como_se_que_esta_bien` que escribe el humano; el `acceptance` |
 | `descripcion` / `comando` | Los dos campos de cada check: la frase del humano que demuestra, y el comando en una línea | — |
 | `docs/lessons.md` | Archivo de cada proyecto con las correcciones del humano ya aprobadas, que los agentes leen al arrancar | Las reglas generales del harness (estas reglas comunes y los agentes del plugin) |
-| `/lessons` | Comando de repaso periódico: propone qué lecciones mantener, juntar o retirar, y qué subir al plugin `harness`. No aplica nada sin aprobación | El apunte de lecciones al cerrar cada feature, que hace el leader |
+| `/harness:lessons` | Comando de repaso periódico: propone qué lecciones mantener, juntar o retirar, y qué subir al plugin `harness`. No aplica nada sin aprobación | El apunte de lecciones al cerrar cada feature, que hace el leader |
 | motor del harness | Los archivos del plugin `harness`: agentes, comandos, hooks, `init.sh`, `proceso/` y estas reglas comunes. Viven fuera del proyecto y desde un proyecto no se editan | Los archivos de cada proyecto: `docs/` (con `lessons.md` y `vocabulary.md`), `feature_list.json`, `progress/`, `specs/`, `init.local.sh` y `.claude/settings.json` |
 | bajo consumo | Nivel de modelos: `implementer` en `sonnet`, el resto en `opus` | — |
 | medio consumo | Nivel de modelos por defecto: todos los subagentes en `opus` | — |

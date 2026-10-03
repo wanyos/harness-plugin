@@ -50,7 +50,7 @@
 | `proceso/CHECKPOINTS.md`      | Criterios objetivos de "estado final correcto"                                                            | Para auto-evaluarte |
 | `agents/`                     | Definiciones de agentes (`harness:leader`, `harness:spec-author`, `harness:implementer`, `harness:reviewer`)                           | Si orquestas trabajo |
 | `init.sh`                     | Verificación e inicialización del entorno. `--checks` ejecuta los `checks` de la feature                  | Al empezar y antes de cerrar |
-| `/project-status`, `/lessons`       | Comandos: dónde está el proyecto; repaso periódico de lecciones y fallos                                  | Los lanza el humano |
+| `/harness:project-status`, `/harness:lessons`       | Comandos: dónde está el proyecto; repaso periódico de lecciones y fallos                                  | Los lanza el humano |
 
 ## 3. Reglas duras (no negociables)
 
@@ -134,7 +134,7 @@ Antes de terminar:
    `docs/roadmap.md`); no se copia a `history.md` ni se deja «por si acaso».
 6. No dejes archivos temporales, ni logs de debug, ni TODOs sin contexto.
 
-> Para ver dónde estás en cualquier momento, usa **`/project-status`**: deriva la vista
+> Para ver dónde estás en cualquier momento, usa **`/harness:project-status`**: deriva la vista
 > de `feature_list.json`, `roadmap.md` y los bloques 📌 de las hojas de
 > decisiones. No hay que mantenerlo, siempre está fresco.
 

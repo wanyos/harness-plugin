@@ -320,7 +320,7 @@ implementer puso el botón en azul» no sirve; «el implementer elige colores en
 de usar los tokens de `src/theme.ts`» sí.
 
 Si una lección aprobada suena a fallo del harness en general y no de este
-proyecto, márcala `harness` en su columna de alcance: el comando `/lessons` la
+proyecto, márcala `harness` en su columna de alcance: el comando `/harness:lessons` la
 recogerá para proponerla a la plantilla.
 
 **Si la corrección se puede comprobar mirando los archivos del repositorio**

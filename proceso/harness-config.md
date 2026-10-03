@@ -340,14 +340,14 @@ vez al mes (o cuando notes fricción), revisa:
   podrían archivarse? (puedes sacarlas a `feature_list.archive.json`).
 - **Plantilla maestra**: si descubres algo que mejora el harness en este
   proyecto y aplica a todos, **actualiza la plantilla maestra** y luego propaga
-  con `upgrade-harness.sh` a los proyectos en marcha. El comando `/lessons`
+  con `upgrade-harness.sh` a los proyectos en marcha. El comando `/harness:lessons`
   hace esta búsqueda por ti a partir de `docs/lessons.md` y de los rechazos del
   reviewer, y te deja las propuestas para la plantilla ya redactadas.
 
-**Al aplicar en la plantilla una propuesta de `/lessons`:** cámbiala en el
+**Al aplicar en la plantilla una propuesta de `/harness:lessons`:** cámbiala en el
 archivo del motor que dice la propuesta (no en `CLAUDE.md` salvo que afecte a
 todos los agentes), sube `VERSION`, y tras propagar, en el proyecto de origen la
-lección pasa a `en plantilla v<versión>` (el siguiente `/lessons` lo propone).
+lección pasa a `en plantilla v<versión>` (el siguiente `/harness:lessons` lo propone).
 
 ### Reglas que NO se relajan
 
