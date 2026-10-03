@@ -519,20 +519,34 @@ fi
 # arranque o el build de producción. Esto lo atrapa antes.
 if [ "$STACK" = "node" ] && [ -f "tsconfig.json" ]; then
   echo ""
-  echo "── 4. Type checking (tsc) ──────────────────────────────"
+  echo "── 4. Type checking ────────────────────────────────────"
 
-  if [ -x "node_modules/.bin/tsc" ]; then
-    # --incremental reutiliza el .tsbuildinfo entre pasadas: en modo --fast el
-    # hook lo llama muchas veces y el arranque en frío domina el tiempo.
-    info "Ejecutando: npx tsc --noEmit --incremental"
-    if npx tsc --noEmit --incremental; then
+  # WHY: en proyectos Vue el tsconfig.json raíz suele tener "files": [] y solo
+  # referencias: `tsc --noEmit` comprueba 0 archivos y sale en verde. vue-tsc -b
+  # sigue las referencias y es el único que ve los .vue (es el del build).
+  # WHY: el .tsbuildinfo va a node_modules/.cache para no dejar un archivo sin
+  # versionar en la raíz. --incremental lo reutiliza entre pasadas: en modo
+  # --fast el hook lo llama muchas veces y el arranque en frío domina el tiempo.
+  TSBUILDINFO="node_modules/.cache/harness/tsconfig.tsbuildinfo"
+  if [ -x "node_modules/.bin/vue-tsc" ]; then
+    info "Ejecutando: npx vue-tsc -b"
+    if npx vue-tsc -b; then
+      ok "Type check OK (vue-tsc sin errores)"
+    else
+      fail "Type check fallido (vue-tsc reporta errores)"
+      EXIT_CODE=1
+    fi
+  elif [ -x "node_modules/.bin/tsc" ]; then
+    mkdir -p "$(dirname "$TSBUILDINFO")"
+    info "Ejecutando: npx tsc --noEmit --incremental --tsBuildInfoFile $TSBUILDINFO"
+    if npx tsc --noEmit --incremental --tsBuildInfoFile "$TSBUILDINFO"; then
       ok "Type check OK (tsc sin errores)"
     else
       fail "Type check fallido (tsc reporta errores)"
       EXIT_CODE=1
     fi
   else
-    warn "tsconfig.json existe pero no se encuentra tsc en node_modules. ¿Falta 'npm install'?"
+    warn "tsconfig.json existe pero no se encuentra tsc ni vue-tsc en node_modules. ¿Falta instalar dependencias?"
   fi
 fi
 
@@ -583,8 +597,20 @@ EOF_LOCAL_STYLE
 fi
 [ $STYLE_DONE -eq 0 ] && case "$STACK" in
   node)
-    if grep -q '"lint"' package.json 2>/dev/null; then
-      run_style "$PKG run lint"; STYLE_DONE=1
+    # WHY: un chequeo de entorno no debe modificar el repositorio. Muchos
+    # proyectos definen "lint" como `eslint . --fix`, que arregla en vez de
+    # comprobar y esconde el fallo. Se prefiere un script que solo compruebe
+    # (lint:check) o eslint directo, y nunca se lanza un "lint" con --fix.
+    if grep -q '"lint:check"' package.json 2>/dev/null; then
+      run_style "$PKG run lint:check"; STYLE_DONE=1
+    elif [ -x "node_modules/.bin/eslint" ] && { compgen -G "eslint.config.*" >/dev/null || compgen -G ".eslintrc*" >/dev/null; }; then
+      run_style "npx eslint ."; STYLE_DONE=1
+    elif grep -q '"lint"' package.json 2>/dev/null; then
+      if grep -E '"lint"[[:space:]]*:[[:space:]]*"[^"]*--fix' package.json >/dev/null 2>&1; then
+        warn "El script 'lint' usa --fix y modificaría archivos: se omite. Define 'lint:check' o LOCAL_STYLE_CMDS en init.local.sh."; STYLE_DONE=1
+      else
+        run_style "$PKG run lint"; STYLE_DONE=1
+      fi
     fi
     if grep -q '"format:check"' package.json 2>/dev/null; then
       run_style "$PKG run format:check"; STYLE_DONE=1
