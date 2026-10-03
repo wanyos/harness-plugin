@@ -1,0 +1,34 @@
+{
+  "$schema_comment": "El harness viene en el plugin harness (agentes, hooks, reglas comunes). Aquí van el agente de la sesión principal, los permisos de este proyecto y la activación del plugin solo en este proyecto (enabledPlugins).",
+  "agent": "harness:leader",
+  "permissions": {
+    "allow": [
+      "Bash(./init.sh)",
+      "Bash(./init.sh --fast)",
+      "Bash(./init.sh --state)",
+      "Bash(./init.sh --checks*)",
+      "Bash(npm test*)",
+      "Bash(pnpm test*)",
+      "Bash(yarn test*)",
+      "Bash(npm run*)",
+      "Bash(pnpm run*)",
+      "Bash(yarn run*)",
+      "Bash(python3 -m unittest*)",
+      "Bash(python3 -m pytest*)",
+      "Bash(pytest*)",
+      "Bash(dotnet test*)",
+      "Bash(dotnet run*)",
+      "Bash(cargo test*)",
+      "Bash(go test*)",
+      "Bash(mvn test*)",
+      "Bash(gradle test*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Read(~/.claude/plugins/cache/*/harness/**)"
+    ]
+  },
+  "enabledPlugins": {
+    "harness@wanyos": true
+  }
+}
