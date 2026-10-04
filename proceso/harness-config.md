@@ -291,7 +291,7 @@ normal en un proyecto recién bootstrapped), escribe el comando que
 Cada feature lleva un bloque `intent` con cinco campos. Es la pieza que hace
 que entiendas lo que se va a implementar y que puedas revisar el spec con
 criterio en vez de dar cosas por buenas. Referencia completa y ejemplo real
-en **`docs/intent-template.md`**.
+en **`proceso/intent-template.md`** del plugin.
 
 Los cinco campos:
 
@@ -343,37 +343,42 @@ empezar a trabajar con Claude Code.
 
 ## 13. Primera sesión con Claude Code
 
-Una vez configurado el harness, tu primera sesión debería seguir este
-patrón para verificar que todo funciona y para que el agente "se aclimate"
-al proyecto.
+Con el harness instalado (§11) y los docs configurados (§11.3 y §12), la
+primera sesión sirve para comprobar que todo funciona y que el leader entiende
+el proyecto.
 
 ### Paso 1 — Abrir Claude Code
 
-```bash
-cd /ruta/al/proyecto
+En Windows, desde **PowerShell** (en el Mac, la terminal), en la raíz del
+proyecto:
+
+```powershell
 claude
 ```
 
-### Paso 2 — Pedirle al agente que verifique el contexto
+La cabecera debe mostrar `@harness:leader`. Si no aparece, revisa `"agent"` y
+`enabledPlugins` en `.claude/settings.json` (§11.2) y que el plugin esté
+instalado en este ordenador (`claude plugin list`).
 
-Tu primer mensaje al agente debe ser algo así:
+### Paso 2 — Comprobar que el leader tiene el contexto
 
-> "Eres el `leader` de este proyecto. Antes de empezar a planificar nada,
-> haz lo siguiente:
->
-> 1. Lee `AGENTS.md`.
-> 2. Lee los archivos de `docs/` (stack, conventions, architecture,
->    verification, related-projects si tiene contenido).
-> 3. Lee `feature_list.json` y `progress/current.md`.
-> 4. Ejecuta `./init.sh`.
->
+No hace falta decirle qué leer: su protocolo de arranque (`agents/leader.md`
+del plugin) ya lee `proceso/AGENTS.md`, `docs/stack.md`, `docs/roadmap.md`,
+`docs/related-projects.md` (si tiene contenido), `docs/lessons.md`,
+`feature_list.json` y `progress/current.md`, y ejecuta `./init.sh`. Comprueba
+que lo ha hecho:
+
+> "¿Has recibido las reglas comunes del harness? Dime el título de cada parte.
 > Después dime: (a) qué entiendes que tienes que hacer en este proyecto,
-> (b) si hay información ambigua o incompleta en los docs, (c) si te
-> faltan datos que yo deba aportar antes de empezar."
+> (b) si hay información ambigua o incompleta en los docs, (c) si te faltan
+> datos que yo deba aportar antes de empezar."
 
-> ⚠️ Este paso es CRÍTICO. Si el agente arranca planificando sin haber leído
-> el contexto, todo lo que produzca va a estar desalineado. Forzar este
-> "warm-up" te ahorra horas después.
+Debe citar las dos partes de las reglas comunes (1 de 2 y 2 de 2). Si no las
+cita, el plugin no está activo en el proyecto o el hook de reglas ha fallado.
+
+> ⚠️ Este paso es CRÍTICO. Si el agente arranca sin haber leído el contexto,
+> todo lo que produzca va a estar desalineado. Comprobarlo te ahorra horas
+> después.
 
 ### Paso 3 — Iterar sobre los docs si hace falta
 
@@ -386,16 +391,22 @@ agente que vuelva a leerlo.
 Repite este ciclo hasta que el agente diga algo equivalente a "tengo todo
 el contexto, dime qué tarea quieres que aborde".
 
-### Paso 4 — Pedir el plan de la primera feature
+### Paso 4 — La primera feature
 
-Una vez el contexto está claro:
+Antes, comprueba que la feature tiene su bloque `intent` (§12.6.1): sin él,
+el leader para y te lo pide. Después:
 
-> "Procede con la feature `bootstrap` de `feature_list.json`. Como
-> `leader`, dame el plan en fases y tareas. Identifica decisiones que
-> requieran mi input. NO escribas código todavía."
+> "Implementa la siguiente feature pendiente."
 
-El leader te debería devolver un plan desglosado. Lo revisas, lo
-apruebas o ajustas, y solo entonces le permites lanzar al `implementer`.
+Lo que pasa depende de la feature:
+
+- **Con `"sdd": true`:** el `spec-author` redacta el spec y el leader **para**
+  en la puerta de aprobación. Lees solo `specs/<nn>-<n>/decisions.md` (una
+  página) y dices "aprobado" o qué cambiar. Hasta entonces no se escribe código.
+- **Sin `sdd`:** el leader te enseña los `checks` derivados del `intent`, una
+  línea por comando, y lanza al `implementer`. No hay puerta, pero los ves antes.
+
+En los dos casos, al terminar el `implementer` el leader lanza al `reviewer`.
 
 ### Paso 5 — Cierre de sesión
 
@@ -421,8 +432,10 @@ esté terminada):
 - **Si el agente intenta saltarse el flujo** (ej: empieza a editar código
   siendo `leader`), recuérdale el rol citando el agente `harness:leader` (`agents/leader.md` del plugin). Es un
   recordatorio que suele funcionar.
-- **Anota en el cheatsheet** los aprendizajes que vayan surgiendo. Lo que
-  hoy es un descubrimiento, mañana es procedimiento.
+- **Las correcciones quedan apuntadas.** Cuando corrijas al agente, el leader
+  lo apunta en `docs/lessons.md`. De vez en cuando, `/harness:lessons` repasa
+  los fallos recientes y propone qué conviene subir al plugin.
+- **Para saber por dónde vas** sin preguntar: `/harness:project-status`.
 
 ---
 
