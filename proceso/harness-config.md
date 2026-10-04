@@ -7,14 +7,20 @@
 ```bash
 claude plugin marketplace add wanyos/harness-plugin
 #   sin clave SSH en GitHub: claude plugin marketplace add https://github.com/wanyos/harness-plugin.git
-claude plugin install harness@wanyos
-claude plugin disable harness@wanyos --scope user
+claude plugin install harness@wanyos && claude plugin disable harness@wanyos --scope user
 ```
 
 **Por qué se desactiva a nivel de usuario:** con scope user el plugin se activa
 en **todos** los proyectos donde abras Claude Code, también en los que no usan
 el harness (o usan otra versión), y les inyecta reglas y hooks. Se activa
 proyecto a proyecto con `enabledPlugins` (§11.2), que viaja con el repositorio.
+Van en una sola línea para que la segunda no se olvide: sin ella, el plugin
+queda activo en todos los proyectos del ordenador.
+
+**Guarda (desde v0.2.1):** aunque el plugin quede activo por error a nivel
+user, sus hooks no hacen nada en un proyecto cuyo `.claude/settings.json` no
+mencione `"harness@"`: salen sin inyectar reglas ni verificar. Esa marca la
+pone el esqueleto (§11.2).
 
 Actualizar a una versión nueva:
 

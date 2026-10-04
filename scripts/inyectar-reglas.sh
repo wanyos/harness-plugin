@@ -19,6 +19,9 @@ ARCHIVO="${CLAUDE_PLUGIN_ROOT:-}/${2:-}"
 
 cat > /dev/null   # el JSON del evento no hace falta; se consume para no dejar la tubería abierta
 
+# Guarda: el plugin solo actúa en proyectos que lo activan en su .claude/settings.json (esqueleto copiado).
+grep -qs '"harness@' "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.json" || exit 0
+
 if [ -z "$EVENTO" ] || [ -z "${CLAUDE_PLUGIN_ROOT:-}" ] || [ ! -f "$ARCHIVO" ]; then
   echo "[harness] inyectar-reglas.sh: no encuentro '$ARCHIVO' (evento '$EVENTO')" >&2
   exit 1

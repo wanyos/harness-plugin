@@ -19,6 +19,9 @@
 set -u
 
 PAYLOAD=$(cat)
+
+# Guarda: el plugin solo actúa en proyectos que lo activan en su .claude/settings.json (esqueleto copiado).
+grep -qs '"harness@' "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.json" || exit 0
 [ -z "$PAYLOAD" ] && exit 0
 
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
